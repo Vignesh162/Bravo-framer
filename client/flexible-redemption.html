@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Flexible Redemption — UI Replica</title>
+<style>
+  :root{
+    --card-width: 920px;
+    --radius: 10px;
+    --muted: #6b7280;
+    --green-100: #eaf8ef;
+    --green-600: #10b981;
+    --blue-600: #2579ff;
+    --blue-100: #eef6ff;
+    --blue-border: #d7e9ff;
+    --input-border: #e6eef8;
+    --text: #111827;
+    --shadow: 0 6px 18px rgba(16,24,40,0.06);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  body{
+    margin: 32px;
+    background: #f7fafc;
+    color: var(--text);
+    display:flex;
+    justify-content:center;
+  }
+
+  .card {
+    width: var(--card-width);
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid #eef2f6;
+  }
+
+  /* header */
+  .card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .title-group{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .icon-sq{
+    width:44px;
+    height:44px;
+    border-radius:8px;
+    background: var(--green-100);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .icon-sq svg{ width:20px; height:20px; fill:var(--green-600); }
+
+  .title {
+    line-height:1;
+  }
+  .title h3{
+    margin:0;
+    font-size:17px;
+    font-weight:600;
+    color: #0f1724;
+  }
+  .title p{
+    margin:3px 0 0 0;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* toggle */
+  .toggle {
+    --w:44px;
+    --h:26px;
+    width:var(--w);
+    height:var(--h);
+    position:relative;
+  }
+  .toggle input{
+    appearance:none;
+  }
+  .toggle .track{
+    width:100%;
+    height:100%;
+    border-radius:999px;
+    background:#e6eef8;
+    display:block;
+    position:relative;
+  }
+  .toggle .knob{
+    position:absolute;
+    top:3px;
+    left:3px;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(2,6,23,0.12);
+    transition:all .18s ease;
+  }
+  .toggle input:checked + .track{
+    background: linear-gradient(90deg, var(--blue-600), #2b7bff 100%);
+  }
+  .toggle input:checked + .track .knob{
+    transform: translateX(18px);
+  }
+
+  /* grid of settings */
+  .settings{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:18px 28px;
+    margin-bottom:18px;
+    align-items:start;
+  }
+
+  .field-label{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:6px;
+    display:block;
+  }
+
+  .row-inline{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  input[type="number"], input[type="text"]{
+    border:1px solid var(--input-border);
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:14px;
+    outline:none;
+    min-width:72px;
+  }
+
+  .points-conversion{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .points-conversion .note{
+    font-size:14px;
+    color:var(--muted);
+  }
+
+  /* slider row spans both columns in layout but visually left aligned */
+  .slider-row{
+    grid-column: 1 / 2;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .slider-label{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* custom range */
+  .range-wrap{
+    padding:6px 0 2px;
+  }
+  input[type="range"]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:8px;
+    border-radius:999px;
+    background:#e6eef8;
+    outline:none;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{
+    height:8px;
+    border-radius:999px;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:20px;
+    height:20px;
+    margin-top:-6px;
+    border-radius:50%;
+    background: var(--blue-600);
+    border: 4px solid #fff;
+    box-shadow: 0 4px 8px rgba(37,121,255,0.18);
+    cursor:pointer;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%; background:var(--blue-600); border:4px solid #fff;
+    box-shadow:0 4px 8px rgba(37,121,255,0.18);
+  }
+
+  /* slider ticks */
+  .ticks{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  /* minimum order (right column under slider) */
+  .min-order{
+    grid-column: 2 / 3;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .input-with-symbol{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .input-with-symbol .symbol{
+    font-size:15px;
+    color:var(--muted);
+    padding:6px 8px;
+    background:#fff;
+    border-radius:6px;
+    border:1px solid var(--input-border);
+  }
+
+  /* info box */
+  .info {
+    margin-top:14px;
+    background: var(--blue-100);
+    border:1px solid var(--blue-border);
+    padding:16px;
+    border-radius:8px;
+    color: #0e3a72;
+    font-size:13px;
+  }
+  .info b { display:block; margin-bottom:8px; color: #144b8a; }
+
+  .info ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .info li{
+    margin:6px 0;
+    line-height:1.35;
+    color:#0a3a66;
+  }
+
+  /* small utility */
+  .muted{ color:var(--muted); font-size:13px; }
+  .right{ text-align:right; }
+
+  /* responsive sanity */
+  @media (max-width:980px){
+    .card{ width:92%; }
+    .settings{ grid-template-columns: 1fr; }
+    .slider-row{ grid-column: 1 / -1; }
+    .min-order{ grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+  <div class="card" role="region" aria-label="Flexible Redemption settings">
+    <!-- header -->
+    <div class="card-header">
+      <div class="title-group">
+        <div class="icon-sq" aria-hidden="true">
+          <!-- simple card icon -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+            <rect x="3.6" y="9.5" width="6.8" height="1.8" rx="0.6" fill="currentColor"></rect>
+          </svg>
+        </div>
+
+        <div class="title">
+          <h3>Flexible Redemption</h3>
+          <p>Customers can redeem points like cash during checkout</p>
+        </div>
+      </div>
+
+      <label class="toggle" title="Enable Flexible Redemption">
+        <input id="toggleRedemption" type="checkbox" checked aria-checked="true" />
+        <span class="track"><span class="knob"></span></span>
+      </label>
+    </div>
+
+    <!-- settings grid -->
+    <div class="settings">
+      <!-- left: points to dollar conversion -->
+      <div>
+        <label class="field-label" for="pointsToDollar">Points to Dollar Conversion</label>
+        <div class="points-conversion">
+          <input id="pointsToDollar" type="number" value="100" min="1" />
+          <div class="note">points = $1</div>
+        </div>
+      </div>
+
+      <!-- right: minimum points -->
+      <div>
+        <label class="field-label" for="minPoints">Minimum Points to Redeem</label>
+        <input id="minPoints" type="number" value="500" min="0" />
+      </div>
+
+      <!-- slider row (left) -->
+      <div class="slider-row">
+        <label class="slider-label" for="maxPercent">Maximum Points Per Order (%)</label>
+        <div class="range-wrap">
+          <input id="maxPercent" type="range" min="0" max="100" value="25" />
+        </div>
+        <div class="ticks" aria-hidden="true">
+          <div>0%</div>
+          <div>25%</div>
+          <div>100%</div>
+        </div>
+      </div>
+
+      <!-- min order value (right) -->
+      <div class="min-order">
+        <label class="field-label" for="minOrder">Minimum Order Value</label>
+        <div class="input-with-symbol">
+          <span class="symbol" aria-hidden="true">$</span>
+          <input id="minOrder" type="number" value="50" min="0" />
+        </div>
+      </div>
+    </div>
+
+    <!-- info box -->
+    <div class="info" role="note" aria-live="polite">
+      <b>How it works:</b>
+      <ul>
+        <li>Customer has 1,000 points = $10.00 value</li>
+        <li>On a $100 order, can use max 25% = 250 points ($2.50)</li>
+        <li>Final order total: $97.50</li>
+      </ul>
+    </div>
+  </div>
+
+<script> 
+  // Slider fill visual & initialization
+  (function(){
+    const range = document.getElementById('maxPercent');
+    const min = Number(range.min);
+    const max = Number(range.max);
+
+    function updateFill(r){
+      const val = Number(r.value);
+      const pct = (val - min) / (max - min) * 100;
+      const blue = getComputedStyle(document.documentElement).getPropertyValue('--blue-600').trim();
+      r.style.background = `linear-gradient(90deg, ${blue} ${pct}%, #e6eef8 ${pct}%)`;
+    }
+
+    // initialize
+    updateFill(range);
+    range.addEventListener('input', function(){ updateFill(this); });
+
+    // Toggle accessible state reflection
+    const toggle = document.getElementById('toggleRedemption');
+    toggle.addEventListener('change', function(){
+      this.setAttribute('aria-checked', this.checked ? 'true' : 'false');
+      // optionally disable inputs when turned off
+      const inputs = document.querySelectorAll('.settings input');
+      inputs.forEach(i => i.disabled = !this.checked);
+      // visually dim card when off
+      document.querySelector('.card').style.opacity = this.checked ? '1' : '0.6';
+    });
+
+    // disable inputs if toggle is unchecked initially
+    if(!toggle.checked){
+      document.querySelectorAll('.settings input').forEach(i => i.disabled = true);
+      document.querySelector('.card').style.opacity = '0.6';
+    }
+  })();
+</script>
+
+</body>
+</html>

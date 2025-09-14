@@ -1,0 +1,63 @@
+@import "tailwindcss";
+html, body, #root {
+  height: 100%;           /* full height */
+  width: 100%;            /* full width */
+  margin: 0;              /* remove default margins */
+  padding: 0;             /* remove default padding */
+  box-sizing: border-box; /* ensure consistent sizing */
+}
+@media (min-width: 640px) { /* sm */
+  .popins-bold-heading {
+    font-size: 64px;
+  }
+}
+
+@media (min-width: 768px) { /* md */
+  .popins-bold-heading {
+    font-size: 86px;
+  }
+}
+
+@media (min-width: 1024px) { /* lg */
+  .popins-bold-heading {
+    font-size: 86px;
+  }
+}
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slide-up 1s ease-in-out forwards;
+}
+
+.slide-down {
+  animation: slide-down 0.8s ease-in-out forwards;
+}
+
+
+.popins-bold-heading {
+  font-family: 'Popins', 'Poppins';
+  font-weight: 800; /* For bold text */
+  color: rgba(41,41,41,1);
+  letter-spacing: -2px;
+}
+
